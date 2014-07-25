@@ -70,6 +70,18 @@ if ( !function_exists( 'build_issuem_leaky_paywall_content_auto_archive_restrict
 	
 }
 
+if ( !function_exists( 'issuem_leaky_paywall_content_auto_archive_subscription_options_allowed_content' ) ) {
+	
+	function issuem_leaky_paywall_content_auto_archive_subscription_options_allowed_content( $allowed_content, $level ) {
+		
+		if ( !empty( $level['access-archived-content'] ) && 'on' === $level['access-archived-content'] )
+			$allowed_content .= '<p>' . __( 'Archive Access', 'issuem-lp-caa' ) . '</p>';
+		
+		return $allowed_content;
+		
+	}
+	add_filter( 'issuem_leaky_paywall_subscription_options_allowed_content', 'issuem_leaky_paywall_content_auto_archive_subscription_options_allowed_content', 10, 2 );
+}
  
 if ( !function_exists( 'build_issuem_leaky_paywall_default_restriction_row_ajax' ) ) {
 
