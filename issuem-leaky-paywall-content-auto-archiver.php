@@ -8,17 +8,17 @@
  
 /*
 Plugin Name: IssueM's Leaky Paywall - Content Auto-Archiver
-Plugin URI: http://issuem.com/
+Plugin URI: http://zeen101.com/
 Description: A premium leaky paywall add-on for WordPress and IssueM.
 Author: IssueM Development Team
 Version: 1.0.0
-Author URI: http://issuem.com/
+Author URI: http://zeen101.com/
 Tags:
 */
 
 //Define global variables...
 if ( !defined( 'ZEEN101_STORE_URL' ) )
-	define( 'ZEEN101_STORE_URL',	'http://issuem.com' );
+	define( 'ZEEN101_STORE_URL',	'http://zeen101.com' );
 	
 define( 'ISSUEM_LP_CAA_NAME', 		'Leaky Paywall - Content Auto Archiver' );
 define( 'ISSUEM_LP_CAA_SLUG', 		'issuem-leaky-paywall-content-auto-archiver' );
