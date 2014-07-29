@@ -111,7 +111,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
 			
 			$message  = '<div id="leaky_paywall_message">';
 			if ( !is_issuem_leaky_subscriber_logged_in() ) {
-				$message .= $dl_pluginissuem_leaky_paywall->replace_variables( stripslashes( $settings['subscribe_login_message'] ) );
+				$message .= $dl_pluginissuem_leaky_paywall->replace_variables( stripslashes( $settings['subscribe_archive_login_message'] ) );
 			} else {
 				$message .= $dl_pluginissuem_leaky_paywall->replace_variables( stripslashes( $settings['subscribe_upgrade_message'] ) );
 			}
@@ -137,7 +137,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
 						'exp_type'  => 'month',
 					)
 				),
-				'subscribe_login_message'		=> __( 'This content has been archived. <a href="{{SUBSCRIBE_LOGIN_URL}}">Log in or Subscribe</a> to a level that has access to archived content.', 'issuem-leaky-paywall' ),
+				'subscribe_archive_login_message'		=> __( 'This content has been archived. <a href="{{SUBSCRIBE_LOGIN_URL}}">Log in or Subscribe</a> to a level that has access to archived content.', 'issuem-leaky-paywall' ),
 				'subscribe_upgrade_message'		=> __( 'This content has been archived. You must <a href="{{SUBSCRIBE_LOGIN_URL}}">upgrade your account</a> to a level that has access to archived content.', 'issuem-leaky-paywall' ),
 			);
 		
@@ -186,7 +186,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
                 	<tr>
                         <th><?php _e( 'Subscribe or Login Message', 'issuem-leaky-paywall' ); ?></th>
                         <td>
-            				<textarea id="subscribe_login_message" class="large-text" name="subscribe_login_message" cols="50" rows="3"><?php echo stripslashes( $settings['subscribe_login_message'] ); ?></textarea>
+            				<textarea id="subscribe_archive_login_message" class="large-text" name="subscribe_archive_login_message" cols="50" rows="3"><?php echo stripslashes( $settings['subscribe_archive_login_message'] ); ?></textarea>
                             <p class="description">
                             <?php _e( "Available replacement variables: {{SUBSCRIBE_LOGIN_URL}}", 'issuem-leaky-paywall' ); ?>
                             </p>
@@ -264,8 +264,8 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
 				
 			}
 			
-			if ( !empty( $_REQUEST['subscribe_login_message'] ) )
-				$settings['subscribe_login_message'] = trim( $_REQUEST['subscribe_login_message']);
+			if ( !empty( $_REQUEST['subscribe_archive_login_message'] ) )
+				$settings['subscribe_archive_login_message'] = trim( $_REQUEST['subscribe_archive_login_message']);
 				
 			if ( !empty( $_REQUEST['subscribe_upgrade_message'] ) )
 				$settings['subscribe_upgrade_message'] = trim( $_REQUEST['subscribe_upgrade_message']);

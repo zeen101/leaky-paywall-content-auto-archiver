@@ -17,10 +17,10 @@ Tags:
 */
 
 //Define global variables...
-if ( !defined( 'ISSUEM_STORE_URL' ) )
-	define( 'ISSUEM_STORE_URL',				'http://issuem.com' );
+if ( !defined( 'ZEEN101_STORE_URL' ) )
+	define( 'ZEEN101_STORE_URL',	'http://issuem.com' );
 	
-define( 'ISSUEM_LP_CAA_NAME', 		'Leaky Paywall - _SM_' );
+define( 'ISSUEM_LP_CAA_NAME', 		'Leaky Paywall - Content Auto Archiver' );
 define( 'ISSUEM_LP_CAA_SLUG', 		'issuem-leaky-paywall-content-auto-archiver' );
 define( 'ISSUEM_LP_CAA_VERSION', 	'1.0.0' );
 define( 'ISSUEM_LP_CAA_DB_VERSION', '1.0.0' );
