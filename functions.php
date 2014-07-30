@@ -3,7 +3,7 @@
  * @package zeen101's Leaky Paywall - Content Auto-Archiver
  * @since 1.0.0
  */
- 
+  
 if ( !function_exists( 'build_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter' ) ) {
 	
 	/*
@@ -83,7 +83,7 @@ if ( !function_exists( 'leaky_paywall_content_auto_archive_subscription_options_
 	add_filter( 'leaky_paywall_subscription_options_allowed_content', 'leaky_paywall_content_auto_archive_subscription_options_allowed_content', 10, 2 );
 }
  
-if ( !function_exists( 'build_leaky_paywall_default_restriction_row_ajax' ) ) {
+if ( !function_exists( 'build_leaky_paywall_content_auto_archive_add_new_restriction_row_ajax' ) ) {
 
 	/**
 	 * AJAX Wrapper
@@ -97,7 +97,7 @@ if ( !function_exists( 'build_leaky_paywall_default_restriction_row_ajax' ) ) {
 			die();
 	}
 	add_action( 'wp_ajax_leaky-paywall-content-auto-archive-add-new-expiration-row', 'build_leaky_paywall_content_auto_archive_add_new_restriction_row_ajax' );
-	add_action( 'wp_ajax_leaky-paywall-content-auto-archive-add-new-expiration-row', 'testing' );
+	
 }
 
 if ( !function_exists( 'wp_print_r' ) ) { 

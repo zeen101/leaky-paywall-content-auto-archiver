@@ -184,21 +184,21 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
                 
                 <table id="leaky_paywall_content_auto_archiver_settings_wrapper" class="leaky-paywall-table">
                 	<tr>
-                        <th><?php _e( 'Subscribe or Login Message', 'issuem-leaky-paywall' ); ?></th>
+                        <th><?php _e( 'Subscribe or Login Message', 'issuem-lp-caa' ); ?></th>
                         <td>
             				<textarea id="subscribe_archive_login_message" class="large-text" name="subscribe_archive_login_message" cols="50" rows="3"><?php echo stripslashes( $settings['subscribe_archive_login_message'] ); ?></textarea>
                             <p class="description">
-                            <?php _e( "Available replacement variables: {{SUBSCRIBE_LOGIN_URL}}", 'issuem-leaky-paywall' ); ?>
+                            <?php _e( "Available replacement variables: {{SUBSCRIBE_LOGIN_URL}}", 'issuem-lp-caa' ); ?>
                             </p>
                         </td>
                     </tr>
                     
                 	<tr>
-                        <th><?php _e( 'Upgrade Message', 'issuem-leaky-paywall' ); ?></th>
+                        <th><?php _e( 'Upgrade Message', 'issuem-lp-caa' ); ?></th>
                         <td>
             				<textarea id="subscribe_archive_upgrade_message" class="large-text" name="subscribe_archive_upgrade_message" cols="50" rows="3"><?php echo stripslashes( $settings['subscribe_archive_upgrade_message'] ); ?></textarea>
                             <p class="description">
-                            <?php _e( "Available replacement variables: {{SUBSCRIBE_LOGIN_URL}}", 'issuem-leaky-paywall' ); ?>
+                            <?php _e( "Available replacement variables: {{SUBSCRIBE_LOGIN_URL}}", 'issuem-lp-caa' ); ?>
                             </p>
                         </td>
                     </tr>		
