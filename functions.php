@@ -4,12 +4,12 @@
  * @since 1.0.0
  */
  
-if ( !function_exists( 'build_issuem_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter' ) ) {
+if ( !function_exists( 'build_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter' ) ) {
 	
 	/*
 	 * This will actually automatically save because of how we're saving the HTTP POST $level array
 	 */
-	function build_issuem_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter( $new_content, $level, $row_key ) {
+	function build_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter( $new_content, $level, $row_key ) {
 		
 		if ( empty( $level['access-archived-content'] ) )
 			$level['access-archived-content'] = 'off';	
@@ -21,12 +21,12 @@ if ( !function_exists( 'build_issuem_leaky_paywall_content_auto_archiver_subscri
 		
 		return $new_content;
 	}
-	add_filter( 'build_issuem_leaky_paywall_subscription_levels_row_addon_filter', 'build_issuem_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter', 10, 3 );
+	add_filter( 'build_leaky_paywall_subscription_levels_row_addon_filter', 'build_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter', 10, 3 );
 }
 
-if ( !function_exists( 'build_issuem_leaky_paywall_content_auto_archive_restriction_row' ) ) {
+if ( !function_exists( 'build_leaky_paywall_content_auto_archive_restriction_row' ) ) {
 	
-	function build_issuem_leaky_paywall_content_auto_archive_restriction_row( $exp_post_type, $expiration, $count ) {
+	function build_leaky_paywall_content_auto_archive_restriction_row( $exp_post_type, $expiration, $count ) {
 
         $return  = '<tr>';
         $return .= '<td>';
@@ -70,9 +70,9 @@ if ( !function_exists( 'build_issuem_leaky_paywall_content_auto_archive_restrict
 	
 }
 
-if ( !function_exists( 'issuem_leaky_paywall_content_auto_archive_subscription_options_allowed_content' ) ) {
+if ( !function_exists( 'leaky_paywall_content_auto_archive_subscription_options_allowed_content' ) ) {
 	
-	function issuem_leaky_paywall_content_auto_archive_subscription_options_allowed_content( $allowed_content, $level ) {
+	function leaky_paywall_content_auto_archive_subscription_options_allowed_content( $allowed_content, $level ) {
 		
 		if ( !empty( $level['access-archived-content'] ) && 'on' === $level['access-archived-content'] )
 			$allowed_content .= '<p>' . __( 'Archive Access', 'issuem-lp-caa' ) . '</p>';
@@ -80,25 +80,24 @@ if ( !function_exists( 'issuem_leaky_paywall_content_auto_archive_subscription_o
 		return $allowed_content;
 		
 	}
-	add_filter( 'issuem_leaky_paywall_subscription_options_allowed_content', 'issuem_leaky_paywall_content_auto_archive_subscription_options_allowed_content', 10, 2 );
+	add_filter( 'leaky_paywall_subscription_options_allowed_content', 'leaky_paywall_content_auto_archive_subscription_options_allowed_content', 10, 2 );
 }
  
-if ( !function_exists( 'build_issuem_leaky_paywall_default_restriction_row_ajax' ) ) {
+if ( !function_exists( 'build_leaky_paywall_default_restriction_row_ajax' ) ) {
 
 	/**
 	 * AJAX Wrapper
 	 *
 	 * @since 1.0.0
 	 */
-	function build_issuem_leaky_paywall_content_auto_archive_add_new_restriction_row_ajax() {
-	
+	function build_leaky_paywall_content_auto_archive_add_new_restriction_row_ajax() {
 		if ( isset( $_REQUEST['row-key'] ) )
-			die( build_issuem_leaky_paywall_content_auto_archive_restriction_row( 'article', array( 'exp_value' => 1, 'exp_type' => 'month' ), $_REQUEST['row-key'] ) );
+			die( build_leaky_paywall_content_auto_archive_restriction_row( 'article', array( 'exp_value' => 1, 'exp_type' => 'month' ), $_REQUEST['row-key'] ) );
 		else
 			die();
 	}
-	add_action( 'wp_ajax_issuem-leaky-paywall-content-auto-archive-add-new-expiration-row', 'build_issuem_leaky_paywall_content_auto_archive_add_new_restriction_row_ajax' );
-	
+	add_action( 'wp_ajax_leaky-paywall-content-auto-archive-add-new-expiration-row', 'build_leaky_paywall_content_auto_archive_add_new_restriction_row_ajax' );
+	add_action( 'wp_ajax_leaky-paywall-content-auto-archive-add-new-expiration-row', 'testing' );
 }
 
 if ( !function_exists( 'wp_print_r' ) ) { 

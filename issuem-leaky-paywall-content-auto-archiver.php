@@ -7,7 +7,7 @@
  */
  
 /*
-Plugin Name: zeen101's Leaky Paywall - Content Auto-Archiver
+Plugin Name: Leaky Paywall - Content Auto-Archiver
 Plugin URI: http://zeen101.com/
 Description: A premium addon for the Leaky Paywall for WordPress plugin.
 Author: zeen101 Development Team
@@ -34,7 +34,7 @@ define( 'LP_CAA_REL_DIR', 	dirname( LP_CAA_BASENAME ) );
  *
  * @since 1.0.0
  */
-function issuem_leaky_paywall_content_auto_archiver_plugins_loaded() {
+function leaky_paywall_content_auto_archiver_plugins_loaded() {
 	
 	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
@@ -45,9 +45,9 @@ function issuem_leaky_paywall_content_auto_archiver_plugins_loaded() {
 		// Instantiate the Pigeon Pack class
 		if ( class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 			
-			global $dl_pluginissuem_leaky_paywall_content_auto_archiver;
+			global $leaky_paywall_content_auto_archiver;
 			
-			$dl_pluginissuem_leaky_paywall_content_auto_archiver = new Leaky_Paywall_Content_Auto_Archiver();
+			$leaky_paywall_content_auto_archiver = new Leaky_Paywall_Content_Auto_Archiver();
 			
 			require_once( 'functions.php' );
 				
@@ -58,14 +58,14 @@ function issuem_leaky_paywall_content_auto_archiver_plugins_loaded() {
 	
 	} else {
 	
-		add_action( 'admin_notices', 'issuem_leaky_paywall_content_auto_archiver_requirement_nag' );
+		add_action( 'admin_notices', 'leaky_paywall_content_auto_archiver_requirement_nag' );
 		
 	}
 
 }
-add_action( 'plugins_loaded', 'issuem_leaky_paywall_content_auto_archiver_plugins_loaded', 4815162342 ); //wait for the plugins to be loaded before init
+add_action( 'plugins_loaded', 'leaky_paywall_content_auto_archiver_plugins_loaded', 4815162342 ); //wait for the plugins to be loaded before init
 
-function issuem_leaky_paywall_content_auto_archiver_requirement_nag() {
+function leaky_paywall_content_auto_archiver_requirement_nag() {
 	?>
 	<div id="leaky-paywall-requirement-nag" class="update-nag">
 		<?php _e( 'You must have the Leaky Paywall plugin activated to use the Leaky Paywall Content Auto Archiver plugin.' ); ?>

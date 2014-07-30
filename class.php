@@ -7,7 +7,7 @@
  */
 
 /**
- * This class registers the main issuem functionality
+ * This class registers the main functionality
  *
  * @since 1.0.0
  */
@@ -28,10 +28,10 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 			
 			add_action( 'admin_enqueue_scripts', array( $this, 'admin_wp_enqueue_scripts' ) );
 			
-			add_action( 'issuem_leaky_paywall_filter_is_restricted', array( $this, 'issuem_leaky_paywall_filter_is_restricted' ), 10, 2 );
+			add_action( 'leaky_paywall_filter_is_restricted', array( $this, 'leaky_paywall_filter_is_restricted' ), 10, 2 );
 
-			add_action( 'issuem_leaky_paywall_settings_form', array( $this, 'settings_div' ) );
-			add_action( 'issuem_leaky_paywall_update_settings', array( $this, 'update_settings_div' ) );
+			add_action( 'leaky_paywall_settings_form', array( $this, 'settings_div' ) );
+			add_action( 'leaky_paywall_update_settings', array( $this, 'update_settings_div' ) );
 						
 		}
 	
@@ -43,17 +43,17 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		function admin_wp_enqueue_scripts( $hook_suffix ) {
 			
 			if ( 'toplevel_page_issuem-leaky-paywall' === $hook_suffix )
-				wp_enqueue_script( 'issuem_leaky_paywall_caa_settings_js', LP_CAA_URL . 'js/issuem-leaky-paywall-settings.js', array( 'jquery' ), LP_CAA_VERSION );
+				wp_enqueue_script( 'leaky_paywall_caa_settings_js', LP_CAA_URL . 'js/issuem-leaky-paywall-settings.js', array( 'jquery' ), LP_CAA_VERSION );
 				
 			
 		}
 		
-		function issuem_leaky_paywall_filter_is_restricted( $is_restricted, $restrictions ) {
+		function leaky_paywall_filter_is_restricted( $is_restricted, $restrictions ) {
 						
 			if ( empty( $restrictions['access-archived-content'] ) || 'off' === $restrictions['access-archived-content'] ) {
 			
 				$settings = $this->get_settings();
-				$lp_settings = get_issuem_leaky_paywall_settings();
+				$lp_settings = get_leaky_paywall_settings();
 			
 				$keys = array_keys( $settings['expirations'] );
 				
@@ -64,7 +64,7 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 						// We don't ever want to block the login, subscription
 						if ( !is_page( array( $lp_settings['page_for_login'], $lp_settings['page_for_subscription'] ) ) ) {
 												
-							global $post, $dl_pluginissuem_leaky_paywall;
+							global $post, $leaky_paywall;
 							
 							if ( !empty( $settings['expirations'][$post->post_type] ) ) {
 							
@@ -97,9 +97,9 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		
 		function the_content_paywall( $content ) {
 		
-			global $dl_pluginissuem_leaky_paywall;
+			global $leaky_paywall;
 			$settings = $this->get_settings();	
-			$lp_settings = get_issuem_leaky_paywall_settings();
+			$lp_settings = get_leaky_paywall_settings();
 					
 			add_filter( 'excerpt_more', '__return_false' );
 			
@@ -111,15 +111,15 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 			
 			$message  = '<div id="leaky_paywall_message">';
 			if ( !is_issuem_leaky_subscriber_logged_in() ) {
-				$message .= $dl_pluginissuem_leaky_paywall->replace_variables( stripslashes( $settings['subscribe_archive_login_message'] ) );
+				$message .= $leaky_paywall->replace_variables( stripslashes( $settings['subscribe_archive_login_message'] ) );
 			} else {
-				$message .= $dl_pluginissuem_leaky_paywall->replace_variables( stripslashes( $settings['subscribe_upgrade_message'] ) );
+				$message .= $leaky_paywall->replace_variables( stripslashes( $settings['subscribe_archive_upgrade_message'] ) );
 			}
 			$message .= '</div>';
 		
 			$new_content = $content . $message;
 		
-			return apply_filters( 'issuem_leaky_paywall_content_archived_subscribe_or_login_message', $new_content, $message, $content );
+			return apply_filters( 'leaky_paywall_content_archived_subscribe_or_login_message', $new_content, $message, $content );
 			
 		}
 				
@@ -137,11 +137,11 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 						'exp_type'  => 'month',
 					)
 				),
-				'subscribe_archive_login_message'		=> __( 'This content has been archived. <a href="{{SUBSCRIBE_LOGIN_URL}}">Log in or Subscribe</a> to a level that has access to archived content.', 'issuem-leaky-paywall' ),
-				'subscribe_upgrade_message'		=> __( 'This content has been archived. You must <a href="{{SUBSCRIBE_LOGIN_URL}}">upgrade your account</a> to a level that has access to archived content.', 'issuem-leaky-paywall' ),
+				'subscribe_archive_login_message'		=> __( 'This content has been archived. <a href="{{SUBSCRIBE_LOGIN_URL}}">Log in or Subscribe</a> to a level that has access to archived content.', 'issuem-lp-caa' ),
+				'subscribe_archive_upgrade_message'		=> __( 'This content has been archived. You must <a href="{{SUBSCRIBE_LOGIN_URL}}">upgrade your account</a> to a level that has access to archived content.', 'issuem-lp-caa' ),
 			);
 		
-			$defaults = apply_filters( 'issuem_leaky_paywall_content_auto_archiver_default_settings', $defaults );
+			$defaults = apply_filters( 'leaky_paywall_content_auto_archiver_default_settings', $defaults );
 			
 			$settings = get_option( 'issuem-leaky-paywall-content-auto-archiver' );
 												
@@ -182,7 +182,7 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
                 
                 <p><strong><?php _e( 'General Settings', 'issuem-lp-caa' ); ?></strong></p>
                 
-                <table id="issuem_leaky_paywall_content_auto_archiver_settings_wrapper" class="leaky-paywall-table">
+                <table id="leaky_paywall_content_auto_archiver_settings_wrapper" class="leaky-paywall-table">
                 	<tr>
                         <th><?php _e( 'Subscribe or Login Message', 'issuem-leaky-paywall' ); ?></th>
                         <td>
@@ -196,7 +196,7 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
                 	<tr>
                         <th><?php _e( 'Upgrade Message', 'issuem-leaky-paywall' ); ?></th>
                         <td>
-            				<textarea id="subscribe_upgrade_message" class="large-text" name="subscribe_upgrade_message" cols="50" rows="3"><?php echo stripslashes( $settings['subscribe_upgrade_message'] ); ?></textarea>
+            				<textarea id="subscribe_archive_upgrade_message" class="large-text" name="subscribe_archive_upgrade_message" cols="50" rows="3"><?php echo stripslashes( $settings['subscribe_archive_upgrade_message'] ); ?></textarea>
                             <p class="description">
                             <?php _e( "Available replacement variables: {{SUBSCRIBE_LOGIN_URL}}", 'issuem-leaky-paywall' ); ?>
                             </p>
@@ -206,13 +206,13 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
                 
                 <p><strong><?php _e( 'Archive Settings', 'issuem-lp-caa' ); ?></strong></p>
                 
-                <table id="issuem_leaky_paywall_content_auto_archiver_wrapper" class="leaky-paywall-table">
+                <table id="leaky_paywall_content_auto_archiver_wrapper" class="leaky-paywall-table">
                                     
                     <?php
                     $count = 0;
                     if ( !empty( $settings['expirations'] ) ) {
 	                    foreach ( $settings['expirations'] as $exp_post_type => $expiration ) {
-	                    echo build_issuem_leaky_paywall_content_auto_archive_restriction_row( $exp_post_type, $expiration, $count );
+	                    echo build_leaky_paywall_content_auto_archive_restriction_row( $exp_post_type, $expiration, $count );
 	                    $count++;
 	                    }
                     }
@@ -225,11 +225,11 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 				</script>
                 
                 <p>
-                    <input class="button-secondary" id="add-expiration-row" class="add-new-issuem-leaky-paywall-expiration-row" type="submit" name="add_issuem_leaky_paywall_expiration_row" value="<?php _e( 'Add New Expiration', 'issuem-lp-caa' ); ?>" />
+                    <input class="button-secondary" id="add-expiration-row" class="add-new-issuem-leaky-paywall-expiration-row" type="submit" name="add_leaky_paywall_expiration_row" value="<?php _e( 'Add New Expiration', 'issuem-lp-caa' ); ?>" />
                 </p>
                                                    
                 <p class="submit">
-                    <input class="button-primary" type="submit" name="update_issuem_leaky_paywall_settings" value="<?php _e( 'Save Settings', 'issuem-lp-caa' ) ?>" />
+                    <input class="button-primary" type="submit" name="update_leaky_paywall_settings" value="<?php _e( 'Save Settings', 'issuem-lp-caa' ) ?>" />
                 </p>
 
                 </div>
@@ -267,8 +267,8 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 			if ( !empty( $_REQUEST['subscribe_archive_login_message'] ) )
 				$settings['subscribe_archive_login_message'] = trim( $_REQUEST['subscribe_archive_login_message']);
 				
-			if ( !empty( $_REQUEST['subscribe_upgrade_message'] ) )
-				$settings['subscribe_upgrade_message'] = trim( $_REQUEST['subscribe_upgrade_message']);
+			if ( !empty( $_REQUEST['subscribe_archive_upgrade_message'] ) )
+				$settings['subscribe_archive_upgrade_message'] = trim( $_REQUEST['subscribe_archive_upgrade_message']);
 				
 			$this->update_settings( $settings );
 			
