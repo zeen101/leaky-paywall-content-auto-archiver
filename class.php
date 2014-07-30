@@ -1,8 +1,8 @@
 <?php
 /**
- * Registers IssueM's Leaky Paywall class
+ * Registers zeen101's Leaky Paywall class
  *
- * @package IssueM's Leaky Paywall
+ * @package zeen101's Leaky Paywall
  * @since 1.0.0
  */
 
@@ -11,9 +11,9 @@
  *
  * @since 1.0.0
  */
-if ( ! class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
+if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 	
-	class IssueM_Leaky_Paywall_Content_Auto_Archiver {
+	class Leaky_Paywall_Content_Auto_Archiver {
 		
 		/**
 		 * Class constructor, puts things in motion
@@ -36,14 +36,14 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		}
 	
 		/**
-		 * Enqueues backend IssueM styles
+		 * Enqueues backend styles
 		 *
 		 * @since 1.0.0
 		 */
 		function admin_wp_enqueue_scripts( $hook_suffix ) {
 			
 			if ( 'toplevel_page_issuem-leaky-paywall' === $hook_suffix )
-				wp_enqueue_script( 'issuem_leaky_paywall_caa_settings_js', ISSUEM_LP_CAA_URL . 'js/issuem-leaky-paywall-settings.js', array( 'jquery' ), ISSUEM_LP_CAA_VERSION );
+				wp_enqueue_script( 'issuem_leaky_paywall_caa_settings_js', LP_CAA_URL . 'js/issuem-leaky-paywall-settings.js', array( 'jquery' ), LP_CAA_VERSION );
 				
 			
 		}
@@ -124,7 +124,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		}
 				
 		/**
-		 * Get IssueM's Leaky Paywall - Subscriber Meta options
+		 * Get zeen101's Leaky Paywall - Subscriber Meta options
 		 *
 		 * @since 1.0.0
 		 */
@@ -150,7 +150,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		}
 		
 		/**
-		 * Update IssueM's Leaky Paywall options
+		 * Update zeen101's Leaky Paywall options
 		 *
 		 * @since 1.0.0
 		 */
@@ -161,7 +161,7 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		}
 		
 		/**
-		 * Create and Display IssueM settings page
+		 * Create and Display settings page
 		 *
 		 * @since 1.0.0
 		 */
@@ -294,8 +294,8 @@ if ( ! class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
 			else
 				$old_db_version = 0;
 
-			$settings['version'] = ISSUEM_LP_CAA_VERSION;
-			$settings['db_version'] = ISSUEM_LP_CAA_DB_VERSION;
+			$settings['version'] = LP_CAA_VERSION;
+			$settings['db_version'] = LP_CAA_DB_VERSION;
 			
 			$this->update_settings( $settings );
 			

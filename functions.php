@@ -1,6 +1,6 @@
 <?php
 /**
- * @package IssueM's Leaky Paywall - Content Auto-Archiver
+ * @package zeen101's Leaky Paywall - Content Auto-Archiver
  * @since 1.0.0
  */
  

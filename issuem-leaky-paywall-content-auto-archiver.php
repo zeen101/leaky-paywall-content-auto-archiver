@@ -1,16 +1,16 @@
 <?php
 /**
- * Main PHP file used to for initial calls to IssueM's Leak Paywall classes and functions.
+ * Main PHP file used to for initial calls to zeen101's Leak Paywall classes and functions.
  *
- * @package IssueM's Leak Paywall - Content Auto-Archiver
+ * @package zeen101's Leak Paywall - Content Auto-Archiver
  * @since 1.0.0
  */
  
 /*
-Plugin Name: IssueM's Leaky Paywall - Content Auto-Archiver
+Plugin Name: zeen101's Leaky Paywall - Content Auto-Archiver
 Plugin URI: http://zeen101.com/
-Description: A premium leaky paywall add-on for WordPress and IssueM.
-Author: IssueM Development Team
+Description: A premium addon for the Leaky Paywall for WordPress plugin.
+Author: zeen101 Development Team
 Version: 1.0.0
 Author URI: http://zeen101.com/
 Tags:
@@ -20,14 +20,14 @@ Tags:
 if ( !defined( 'ZEEN101_STORE_URL' ) )
 	define( 'ZEEN101_STORE_URL',	'http://zeen101.com' );
 	
-define( 'ISSUEM_LP_CAA_NAME', 		'Leaky Paywall - Content Auto Archiver' );
-define( 'ISSUEM_LP_CAA_SLUG', 		'issuem-leaky-paywall-content-auto-archiver' );
-define( 'ISSUEM_LP_CAA_VERSION', 	'1.0.0' );
-define( 'ISSUEM_LP_CAA_DB_VERSION', '1.0.0' );
-define( 'ISSUEM_LP_CAA_URL', 		plugin_dir_url( __FILE__ ) );
-define( 'ISSUEM_LP_CAA_PATH', 		plugin_dir_path( __FILE__ ) );
-define( 'ISSUEM_LP_CAA_BASENAME', 	plugin_basename( __FILE__ ) );
-define( 'ISSUEM_LP_CAA_REL_DIR', 	dirname( ISSUEM_LP_CAA_BASENAME ) );
+define( 'LP_CAA_NAME', 		'Leaky Paywall - Content Auto Archiver' );
+define( 'LP_CAA_SLUG', 		'leaky-paywall-content-auto-archiver' );
+define( 'LP_CAA_VERSION', 	'1.0.0' );
+define( 'LP_CAA_DB_VERSION', '1.0.0' );
+define( 'LP_CAA_URL', 		plugin_dir_url( __FILE__ ) );
+define( 'LP_CAA_PATH', 		plugin_dir_path( __FILE__ ) );
+define( 'LP_CAA_BASENAME', 	plugin_basename( __FILE__ ) );
+define( 'LP_CAA_REL_DIR', 	dirname( LP_CAA_BASENAME ) );
 
 /**
  * Instantiate Pigeon Pack class, require helper files
@@ -43,16 +43,16 @@ function issuem_leaky_paywall_content_auto_archiver_plugins_loaded() {
 		require_once( 'class.php' );
 	
 		// Instantiate the Pigeon Pack class
-		if ( class_exists( 'IssueM_Leaky_Paywall_Content_Auto_Archiver' ) ) {
+		if ( class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 			
 			global $dl_pluginissuem_leaky_paywall_content_auto_archiver;
 			
-			$dl_pluginissuem_leaky_paywall_content_auto_archiver = new IssueM_Leaky_Paywall_Content_Auto_Archiver();
+			$dl_pluginissuem_leaky_paywall_content_auto_archiver = new Leaky_Paywall_Content_Auto_Archiver();
 			
 			require_once( 'functions.php' );
 				
 			//Internationalization
-			load_plugin_textdomain( 'issuem-lp-caa', false, ISSUEM_LP_CAA_REL_DIR . '/i18n/' );
+			load_plugin_textdomain( 'issuem-lp-caa', false, LP_CAA_REL_DIR . '/i18n/' );
 				
 		}
 	
