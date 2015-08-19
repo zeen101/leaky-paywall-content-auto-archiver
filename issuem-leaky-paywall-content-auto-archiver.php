@@ -39,6 +39,9 @@ function leaky_paywall_content_auto_archiver_plugins_loaded() {
 	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
 	if ( is_plugin_active( 'issuem-leaky-paywall/issuem-leaky-paywall.php' ) ) {
+		
+		global $leaky_paywall_data;
+		$leaky_paywall_data = get_plugin_data( WP_PLUGIN_DIR . '/issuem-leaky-paywall/issuem-leaky-paywall.php' );
 
 		require_once( 'class.php' );
 	

@@ -49,7 +49,17 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		}
 		
 		function leaky_paywall_filter_is_restricted( $is_restricted, $restrictions ) {
-						
+	
+			global $leaky_paywall_data;
+			
+			if ( version_compare( $leaky_paywall_data['Version'], '3.0.0', '>=' ) ) {
+				$settings = get_leaky_paywall_settings();
+				$id = leaky_paywall_subscriber_current_level_id();
+				$restrictions = $settings['levels'][$id];
+			} else {
+				$restrictions = $restrictions;
+			}
+			
 			if ( empty( $restrictions['access-archived-content'] ) || 'off' === $restrictions['access-archived-content'] ) {
 			
 				$settings = $this->get_settings();
