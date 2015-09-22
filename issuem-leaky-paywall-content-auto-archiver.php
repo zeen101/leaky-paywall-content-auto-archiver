@@ -38,8 +38,9 @@ function leaky_paywall_content_auto_archiver_plugins_loaded() {
 	
 	include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 
-	if ( is_plugin_active( 'issuem-leaky-paywall/issuem-leaky-paywall.php' ) ) {
-		
+	if ( is_plugin_active( 'issuem-leaky-paywall/issuem-leaky-paywall.php' ) 
+		|| is_plugin_active( 'leaky-paywall/leaky-paywall.php' ) ) {
+					
 		global $leaky_paywall_data;
 		$leaky_paywall_data = get_plugin_data( WP_PLUGIN_DIR . '/issuem-leaky-paywall/issuem-leaky-paywall.php' );
 
@@ -47,7 +48,6 @@ function leaky_paywall_content_auto_archiver_plugins_loaded() {
 	
 		// Instantiate the Pigeon Pack class
 		if ( class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
-			
 			global $leaky_paywall_content_auto_archiver;
 			
 			$leaky_paywall_content_auto_archiver = new Leaky_Paywall_Content_Auto_Archiver();
@@ -56,7 +56,6 @@ function leaky_paywall_content_auto_archiver_plugins_loaded() {
 				
 			//Internationalization
 			load_plugin_textdomain( 'issuem-lp-caa', false, LP_CAA_REL_DIR . '/i18n/' );
-				
 		}
 	
 	} else {
