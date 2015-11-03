@@ -50,32 +50,38 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		
 		function leaky_paywall_filter_is_restricted( $is_restricted, $restrictions ) {
 	
-			global $leaky_paywall_data;
-			
-			if ( version_compare( $leaky_paywall_data['Version'], '3.0.0', '>=' ) ) {
-				$settings = get_leaky_paywall_settings();
-				$id = leaky_paywall_subscriber_current_level_id();
-				$restrictions = $settings['levels'][$id];
-			} else {
-				$restrictions = $restrictions;
-			}
-			
+			global $leaky_paywall_data, $blog_id;
+
+                        if ( version_compare( $leaky_paywall_data['Version'], '3.0.0', '>=' ) ) {
+                                $settings = get_leaky_paywall_settings();
+                                $level_ids = leaky_paywall_subscriber_current_level_ids();
+				if ( !empty( $ids ) ) {
+					foreach( $level_ids as $level_id ) {
+						if ( $blog_id == $level_id['site'] || 'all' == $level_id['site'] ) {
+                               		 		$restrictions = $settings['levels'][$level_id];
+						}
+					}
+				}
+                        } else {
+                                $restrictions = $restrictions;
+                        }
+
 			if ( empty( $restrictions['access-archived-content'] ) || 'off' === $restrictions['access-archived-content'] ) {
 			
 				$settings = $this->get_settings();
 				$lp_settings = get_leaky_paywall_settings();
 			
 				$keys = array_keys( $settings['expirations'] );
-				
-				if ( is_singular( $keys ) ) {
 							
+				if ( is_singular( $keys ) ) {
+				
 					if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
 					
 						// We don't ever want to block the login, subscription
 						if ( !is_page( array( $lp_settings['page_for_login'], $lp_settings['page_for_subscription'] ) ) ) {
 												
 							global $post, $leaky_paywall;
-							
+
 							if ( !empty( $settings['expirations'][$post->post_type] ) ) {
 							
 								$exp_value = $settings['expirations'][$post->post_type]['exp_value'];
@@ -109,8 +115,7 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		
 			global $leaky_paywall;
 			$settings = $this->get_settings();	
-			$lp_settings = get_leaky_paywall_settings();
-					
+
 			add_filter( 'excerpt_more', '__return_false' );
 			
 			//Remove the_content filter for get_the_excerpt calls
