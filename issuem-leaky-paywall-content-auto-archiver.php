@@ -40,9 +40,15 @@ function leaky_paywall_content_auto_archiver_plugins_loaded() {
 
 	if ( is_plugin_active( 'issuem-leaky-paywall/issuem-leaky-paywall.php' ) 
 		|| is_plugin_active( 'leaky-paywall/leaky-paywall.php' ) ) {
-					
+						
 		global $leaky_paywall_data;
-		$leaky_paywall_data = get_plugin_data( WP_PLUGIN_DIR . '/issuem-leaky-paywall/issuem-leaky-paywall.php' );
+
+		if ( is_plugin_active( 'issuem-leaky-paywall/issuem-leaky-paywall.php' ) ) {
+			$leaky_paywall_data = get_plugin_data( WP_PLUGIN_DIR . '/issuem-leaky-paywall/issuem-leaky-paywall.php' );
+		} else {
+			$leaky_paywall_data = get_plugin_data( WP_PLUGIN_DIR . '/leaky-paywall/leaky-paywall.php' );
+		}
+		
 
 		require_once( 'class.php' );
 	
