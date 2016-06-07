@@ -49,7 +49,6 @@ function leaky_paywall_content_auto_archiver_plugins_loaded() {
 			$leaky_paywall_data = get_plugin_data( WP_PLUGIN_DIR . '/leaky-paywall/leaky-paywall.php' );
 		}
 		
-
 		require_once( 'class.php' );
 	
 		// Instantiate the Pigeon Pack class
