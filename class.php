@@ -52,19 +52,19 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 	
 			global $leaky_paywall_data, $blog_id;
 
-            if ( version_compare( $leaky_paywall_data['Version'], '3.0.0', '>=' ) ) {
-                $settings = get_leaky_paywall_settings();
-                $level_ids = leaky_paywall_subscriber_current_level_ids();
-				if ( !empty( $level_ids ) ) {
+                        if ( version_compare( $leaky_paywall_data['Version'], '3.0.0', '>=' ) ) {
+                                $settings = get_leaky_paywall_settings();
+                                $level_ids = leaky_paywall_subscriber_current_level_ids();
+				if ( !empty( $ids ) ) {
 					foreach( $level_ids as $level_id ) {
-						if ( empty( $settings['levels'][$level_id]['site'] ) || $blog_id == $settings['levels'][$level_id]['site'] || 'all' == $settings['levels'][$level_id]['site'] ) {
-               		 		$restrictions = $settings['levels'][$level_id];
+						if ( $blog_id == $level_id['site'] || 'all' == $level_id['site'] ) {
+                               		 		$restrictions = $settings['levels'][$level_id];
 						}
 					}
 				}
-            } else {
-                    $restrictions = $restrictions;
-            }
+                        } else {
+                                $restrictions = $restrictions;
+                        }
 
 			if ( empty( $restrictions['access-archived-content'] ) || 'off' === $restrictions['access-archived-content'] ) {
 			
@@ -113,7 +113,7 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		
 		function the_content_paywall( $content ) {
 		
-			global $leaky_paywall;
+			global $leaky_paywall_restrictions;
 			$settings = $this->get_settings();	
 
 			add_filter( 'excerpt_more', '__return_false' );
@@ -126,9 +126,9 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 			
 			$message  = '<div id="leaky_paywall_message">';
 			if ( !is_user_logged_in() ) {
-				$message .= $leaky_paywall->replace_variables( stripslashes( $settings['subscribe_archive_login_message'] ) );
+				$message .= $leaky_paywall_restrictions->replace_variables( stripslashes( $settings['subscribe_archive_login_message'] ) );
 			} else {
-				$message .= $leaky_paywall->replace_variables( stripslashes( $settings['subscribe_archive_upgrade_message'] ) );
+				$message .= $leaky_paywall_restrictions->replace_variables( stripslashes( $settings['subscribe_archive_upgrade_message'] ) );
 			}
 			$message .= '</div>';
 		
