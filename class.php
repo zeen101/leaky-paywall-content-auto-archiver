@@ -72,7 +72,7 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 				$lp_settings = get_leaky_paywall_settings();
 			
 				$keys = array_keys( $settings['expirations'] );
-							
+					
 				if ( is_singular( $keys ) ) {
 				
 					if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
@@ -113,7 +113,7 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		
 		function the_content_paywall( $content ) {
 		
-			global $leaky_paywall_restrictions;
+			$leaky_paywall_restrictions = new Leaky_Paywall_Restrictions();
 			$settings = $this->get_settings();	
 
 			add_filter( 'excerpt_more', '__return_false' );
@@ -170,7 +170,6 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		 * @since 1.0.0
 		 */
 		function update_settings( $settings ) {
-			
 			update_option( 'issuem-leaky-paywall-content-auto-archiver', $settings );
 			
 		}
@@ -255,6 +254,18 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		}
 		
 		function update_settings_div() {
+
+			if(isset($_GET['tab'])) {
+				$tab = $_GET['tab'];
+			} else if ( $_GET['page'] == 'issuem-leaky-paywall' ) {
+				$tab = 'general';
+			} else {
+				$tab = '';
+			}
+
+			if ( $tab != 'general' ) {
+				return;
+			}
 		
 			$settings = $this->get_settings();
 						
