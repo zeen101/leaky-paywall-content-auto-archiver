@@ -49,25 +49,28 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		}
 		
 		function leaky_paywall_filter_is_restricted( $is_restricted, $restrictions ) {
-	
 			global $leaky_paywall_data, $blog_id;
 
                         if ( version_compare( $leaky_paywall_data['Version'], '3.0.0', '>=' ) ) {
+
                                 $settings = get_leaky_paywall_settings();
                                 $level_ids = leaky_paywall_subscriber_current_level_ids();
-				if ( !empty( $ids ) ) {
+
+				if ( !empty( $level_ids ) ) {
 					foreach( $level_ids as $level_id ) {
-						if ( $blog_id == $level_id['site'] || 'all' == $level_id['site'] ) {
-                               		 		$restrictions = $settings['levels'][$level_id];
+						if( $blog_id == $settings['levels'][$level_id]['site'] || 'all' == $settings['levels'][$level_id]['site'] ){
+							$restrictions = $settings['levels'][$level_id];
 						}
+                               		 		
 					}
 				}
                         } else {
                                 $restrictions = $restrictions;
                         }
 
+
+
 			if ( empty( $restrictions['access-archived-content'] ) || 'off' === $restrictions['access-archived-content'] ) {
-			
 				$settings = $this->get_settings();
 				$lp_settings = get_leaky_paywall_settings();
 			
