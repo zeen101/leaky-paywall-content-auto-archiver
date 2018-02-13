@@ -60,6 +60,9 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 					foreach( $level_ids as $level_id ) {
 						if( $blog_id == $settings['levels'][$level_id]['site'] || 'all' == $settings['levels'][$level_id]['site'] ){
 							$restrictions = $settings['levels'][$level_id];
+						}else if(empty($settings['levels'][$level_id]['site'])){
+							$restrictions = $settings['levels'][$level_id];
+
 						}
                                		 		
 					}
