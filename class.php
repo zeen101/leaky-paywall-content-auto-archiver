@@ -49,30 +49,33 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		}
 		
 		function leaky_paywall_filter_is_restricted( $is_restricted, $restrictions ) {
-	
 			global $leaky_paywall_data, $blog_id;
 
-            if ( version_compare( $leaky_paywall_data['Version'], '3.0.0', '>=' ) ) {
-                $settings = get_leaky_paywall_settings();
-                $level_ids = leaky_paywall_subscriber_current_level_ids();
+                        if ( version_compare( $leaky_paywall_data['Version'], '3.0.0', '>=' ) ) {
+
+                                $settings = get_leaky_paywall_settings();
+                                $level_ids = leaky_paywall_subscriber_current_level_ids();
+
 				if ( !empty( $level_ids ) ) {
 					foreach( $level_ids as $level_id ) {
-						if ( empty( $settings['levels'][$level_id]['site'] ) || $blog_id == $settings['levels'][$level_id]['site'] || 'all' == $settings['levels'][$level_id]['site'] ) {
-               		 		$restrictions = $settings['levels'][$level_id];
+						if( $blog_id == $settings['levels'][$level_id]['site'] || 'all' == $settings['levels'][$level_id]['site'] ){
+							$restrictions = $settings['levels'][$level_id];
 						}
+                               		 		
 					}
 				}
-            } else {
-                    $restrictions = $restrictions;
-            }
+                        } else {
+                                $restrictions = $restrictions;
+                        }
+
+
 
 			if ( empty( $restrictions['access-archived-content'] ) || 'off' === $restrictions['access-archived-content'] ) {
-			
 				$settings = $this->get_settings();
 				$lp_settings = get_leaky_paywall_settings();
 			
 				$keys = array_keys( $settings['expirations'] );
-							
+					
 				if ( is_singular( $keys ) ) {
 				
 					if ( !current_user_can( 'manage_options' ) ) { //Admins can see it all
@@ -113,7 +116,7 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		
 		function the_content_paywall( $content ) {
 		
-			global $leaky_paywall;
+			$leaky_paywall_restrictions = new Leaky_Paywall_Restrictions();
 			$settings = $this->get_settings();	
 
 			add_filter( 'excerpt_more', '__return_false' );
@@ -126,9 +129,9 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 			
 			$message  = '<div id="leaky_paywall_message">';
 			if ( !is_user_logged_in() ) {
-				$message .= $leaky_paywall->replace_variables( stripslashes( $settings['subscribe_archive_login_message'] ) );
+				$message .= $leaky_paywall_restrictions->replace_variables( stripslashes( $settings['subscribe_archive_login_message'] ) );
 			} else {
-				$message .= $leaky_paywall->replace_variables( stripslashes( $settings['subscribe_archive_upgrade_message'] ) );
+				$message .= $leaky_paywall_restrictions->replace_variables( stripslashes( $settings['subscribe_archive_upgrade_message'] ) );
 			}
 			$message .= '</div>';
 		
@@ -170,7 +173,6 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		 * @since 1.0.0
 		 */
 		function update_settings( $settings ) {
-			
 			update_option( 'issuem-leaky-paywall-content-auto-archiver', $settings );
 			
 		}
@@ -255,6 +257,18 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		}
 		
 		function update_settings_div() {
+
+			if(isset($_GET['tab'])) {
+				$tab = $_GET['tab'];
+			} else if ( $_GET['page'] == 'issuem-leaky-paywall' ) {
+				$tab = 'general';
+			} else {
+				$tab = '';
+			}
+
+			if ( $tab != 'general' ) {
+				return;
+			}
 		
 			$settings = $this->get_settings();
 						

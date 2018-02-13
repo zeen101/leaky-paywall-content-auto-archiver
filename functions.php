@@ -18,10 +18,9 @@ if ( !function_exists( 'build_leaky_paywall_content_auto_archiver_subscription_l
 		$new_content .= '<th>' . __( 'Access Archived Content?', 'issuem-lp-caa' ). '</th>';
 		$new_content .= '<td><input id="level-access-archived-content-' . $row_key . '" class="access-archived-content" type="checkbox" name="levels[' . $row_key . '][access-archived-content]" value="on" ' . checked( 'on', $level['access-archived-content'], false ) . ' /></td>';
 		$new_content .= '</tr>';
-		
 		return $new_content;
 	}
-	add_filter( 'build_leaky_paywall_subscription_levels_row_addon_filter', 'build_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter', 10, 3 );
+	add_filter( 'build_leaky_paywall_subscription_levels_row_addon_filter', 'build_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter', 100, 3 );
 }
 
 if ( !function_exists( 'build_leaky_paywall_content_auto_archive_restriction_row' ) ) {
