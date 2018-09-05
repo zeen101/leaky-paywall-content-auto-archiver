@@ -9,19 +9,21 @@ if ( !function_exists( 'build_leaky_paywall_content_auto_archiver_subscription_l
 	/*
 	 * This will actually automatically save because of how we're saving the HTTP POST $level array
 	 */
-	function build_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter( $new_content, $level, $row_key ) {
+	function build_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter( $level, $row_key ) {
 		
-		if ( empty( $level['access-archived-content'] ) )
+		if ( empty( $level['access-archived-content'] ) ) {
 			$level['access-archived-content'] = 'off';	
+		}
 		
-		$new_content .= '<tr>';
-		$new_content .= '<th>' . __( 'Access Archived Content?', 'issuem-lp-caa' ). '</th>';
-		$new_content .= '<td><input id="level-access-archived-content-' . $row_key . '" class="access-archived-content" type="checkbox" name="levels[' . $row_key . '][access-archived-content]" value="on" ' . checked( 'on', $level['access-archived-content'], false ) . ' /></td>';
-		$new_content .= '</tr>';
+		echo '<tr>';
+		echo '<th>' . __( 'Archived Content', 'issuem-lp-caa' ). '</th>';
+		echo '<td><input id="level-access-archived-content-' . $row_key . '" class="access-archived-content" type="checkbox" name="levels[' . $row_key . '][access-archived-content]" value="on" ' . checked( 'on', $level['access-archived-content'], false ) . ' /> Allow subscribers of this level to access archived content.</td>';
+		echo '</tr>';
 		
-		return $new_content;
 	}
-	add_filter( 'build_leaky_paywall_subscription_levels_row_addon_filter', 'build_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter', 10, 3 );
+
+	add_action( 'leaky_paywall_after_subscription_levels_row', 'build_leaky_paywall_content_auto_archiver_subscription_levels_row_addon_filter', 10, 2 );
+		
 }
 
 if ( !function_exists( 'build_leaky_paywall_content_auto_archive_restriction_row' ) ) {
