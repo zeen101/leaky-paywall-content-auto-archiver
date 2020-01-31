@@ -229,13 +229,11 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
             
                 <div class="handlediv" title="Click to toggle"><br /></div>
                 
-                <h3 class="hndle"><span><?php _e( 'Leaky Paywall - Content Auto-Archiver', 'issuem-lp-caa' ); ?></span></h3>
+                <h3 class="hndle"><span><?php _e( 'Content Auto Archiver', 'issuem-lp-caa' ); ?></span></h3>
                 
                 <div class="inside">
                 
-                <p><strong><?php _e( 'General Settings', 'issuem-lp-caa' ); ?></strong></p>
-                
-                <table id="leaky_paywall_content_auto_archiver_settings_wrapper" class="leaky-paywall-table">
+                <table id="leaky_paywall_content_auto_archiver_settings_wrapper" class="form-table">
                 	<tr>
                         <th><?php _e( 'Subscribe or Login Message', 'issuem-lp-caa' ); ?></th>
                         <td>
@@ -280,11 +278,7 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
                 <p>
                     <input class="button-secondary" id="add-expiration-row" class="add-new-issuem-leaky-paywall-expiration-row" type="submit" name="add_leaky_paywall_expiration_row" value="<?php _e( 'Add New Expiration', 'issuem-lp-caa' ); ?>" />
                 </p>
-                                                   
-                <p class="submit">
-                    <input class="button-primary" type="submit" name="update_leaky_paywall_settings" value="<?php _e( 'Save Settings', 'issuem-lp-caa' ) ?>" />
-                </p>
-
+                      
                 </div>
                 
             </div>
@@ -293,6 +287,18 @@ if ( ! class_exists( 'Leaky_Paywall_Content_Auto_Archiver' ) ) {
 		}
 		
 		function update_settings_div() {
+
+			if(isset($_GET['tab'])) {
+				$tab = $_GET['tab'];
+			} else if ( $_GET['page'] == 'issuem-leaky-paywall' ) {
+				$tab = 'general';
+			} else {
+				$tab = '';
+			}
+
+			if ( $tab != 'general' ) {
+				return;
+			}
 		
 			$settings = $this->get_settings();
 						
