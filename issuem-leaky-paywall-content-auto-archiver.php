@@ -11,7 +11,7 @@ Plugin Name: Leaky Paywall - Content Auto-Archiver
 Plugin URI: https://zeen101.com/
 Description: A premium addon for the Leaky Paywall for WordPress plugin.
 Author: ZEEN101
-Version: 3.3.0
+Version: 3.4.0
 Author URI: https://zeen101.com/
 Tags:
 */
@@ -22,7 +22,7 @@ if ( !defined( 'ZEEN101_STORE_URL' ) )
 	
 define( 'LP_CAA_NAME', 		'Leaky Paywall - Content Auto Archiver' );
 define( 'LP_CAA_SLUG', 		'leaky-paywall-content-auto-archiver' );
-define( 'LP_CAA_VERSION', 	'3.3.0' );
+define( 'LP_CAA_VERSION', 	'3.4.0' );
 define( 'LP_CAA_DB_VERSION', '1.0.0' );
 define( 'LP_CAA_URL', 		plugin_dir_url( __FILE__ ) );
 define( 'LP_CAA_PATH', 		plugin_dir_path( __FILE__ ) );
