@@ -61,6 +61,7 @@ function leaky_paywall_content_auto_archiver_plugins_loaded()
 
 			$leaky_paywall_content_auto_archiver = new Leaky_Paywall_Content_Auto_Archiver();
 
+			require_once('includes/admin/settings.php');
 			require_once('functions.php');
 
 			//Internationalization

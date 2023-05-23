@@ -100,25 +100,3 @@ if (!function_exists('build_leaky_paywall_content_auto_archive_add_new_restricti
 	}
 	add_action('wp_ajax_leaky-paywall-content-auto-archive-add-new-expiration-row', 'build_leaky_paywall_content_auto_archive_add_new_restriction_row_ajax');
 }
-
-if (!function_exists('wp_print_r')) {
-
-	/**
-	 * Helper function used for printing out debug information
-	 *
-	 * HT: Glenn Ansley @ iThemes.com
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int $args Arguments to pass to print_r
-	 * @param bool $die TRUE to die else FALSE (default TRUE)
-	 */
-	function wp_print_r($args, $die = true)
-	{
-
-		$echo = '<pre>' . print_r($args, true) . '</pre>';
-
-		if ($die) die($echo);
-		else echo $echo;
-	}
-}
