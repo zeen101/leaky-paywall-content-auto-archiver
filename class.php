@@ -24,6 +24,7 @@ class Leaky_Paywall_Content_Auto_Archiver
 	public function __construct()
 	{
 		add_filter('leaky_paywall_filter_is_restricted', array($this, 'leaky_paywall_filter_is_restricted'), 10, 3);
+		add_filter('leaky_paywall_nag_message_text', array($this, 'the_content_paywall'), 20, 2);
 	}
 
 	public function leaky_paywall_filter_is_restricted($is_restricted, $restrictions, $post_id)
@@ -55,21 +56,10 @@ class Leaky_Paywall_Content_Auto_Archiver
 
 						$post_data = get_post($post_id);
 
-						if (!empty($settings['expirations'][$post_data->post_type])) {
-
-							$exp_value = $settings['expirations'][$post_data->post_type]['exp_value'];
-							$exp_type = $settings['expirations'][$post_data->post_type]['exp_type'];
-
-							$exp_time = strtotime('-' . $exp_value . ' ' . $exp_type . ' midnight');
-							$post_time = strtotime($post_data->post_date);
-
-							if ($post_time <= $exp_time) {
-
-								add_filter('the_content', array($this, 'the_content_paywall'), 999);
-								$is_restricted = false; //This is an expired post, so we want to use the expired message
-
-							}
+						if ( $this->is_archived_content( $post_data ) ) {
+							$is_restricted = true;
 						}
+
 					}
 				}
 			}
@@ -78,30 +68,45 @@ class Leaky_Paywall_Content_Auto_Archiver
 		return $is_restricted;
 	}
 
-	public function the_content_paywall($content)
+	public function is_archived_content( $post_data )
 	{
 
 		$settings = get_leaky_paywall_content_auto_archive_settings();
 
-		add_filter('excerpt_more', '__return_false');
+		if (!empty($settings['expirations'][$post_data->post_type])) {
 
-		//Remove the_content filter for get_the_excerpt calls
-		remove_filter('the_content', array($this, 'the_content_paywall'), 999);
-		$content = get_the_excerpt();
-		add_filter('the_content', array($this, 'the_content_paywall'), 999);
-		//Add the_content filter back for futhre the_content calls
+			$exp_value = $settings['expirations'][$post_data->post_type]['exp_value'];
+			$exp_type = $settings['expirations'][$post_data->post_type]['exp_type'];
 
-		$message  = '<div id="leaky_paywall_message">';
-		if (!is_user_logged_in()) {
-			$message .= $this->replace_variables(stripslashes($settings['subscribe_archive_login_message']));
-		} else {
-			$message .= $this->replace_variables(stripslashes($settings['subscribe_archive_upgrade_message']));
+			$exp_time = strtotime('-' . $exp_value . ' ' . $exp_type . ' midnight');
+			$post_time = strtotime($post_data->post_date);
+
+			if ($post_time <= $exp_time) {
+				return true;
+			}
 		}
-		$message .= '</div>';
 
-		$new_content = $content . $message;
+		return false;
+	}
 
-		return apply_filters('leaky_paywall_content_archived_subscribe_or_login_message', $new_content, $message, $content);
+	public function the_content_paywall($text, $post_id)
+	{
+
+		$post_data = get_post( $post_id );
+
+		if ( !$this->is_archived_content( $post_data ) ) {
+			return $text;
+		}
+
+		$settings = get_leaky_paywall_content_auto_archive_settings();
+
+		if (!is_user_logged_in()) {
+			$new_content = $this->replace_variables(stripslashes($settings['subscribe_archive_login_message']));
+		} else {
+			$new_content = $this->replace_variables(stripslashes($settings['subscribe_archive_upgrade_message']));
+		}
+
+		return apply_filters('leaky_paywall_content_archived_subscribe_or_login_message', $new_content, $text, $post_id);
 	}
 
 	public function replace_variables($message)
