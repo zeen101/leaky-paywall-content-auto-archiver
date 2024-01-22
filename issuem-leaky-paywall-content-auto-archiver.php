@@ -1,25 +1,26 @@
 <?php
 
 /**
- * Main PHP file used to for initial calls to zeen101's Leak Paywall classes and functions.
+ * Main PHP file used to for initial calls to Leaky Paywall classes and functions.
  *
- * @package zeen101's Leak Paywall - Content Auto-Archiver
+ * @package Leaky Paywall - Content Auto-Archiver
  * @since 1.0.0
  */
 
 /*
 Plugin Name: Leaky Paywall - Content Auto-Archiver
-Plugin URI: https://zeen101.com/
-Description: Make content free for a certain amount of time, after which it is placed behind the paywall.
-Author: ZEEN101
+Plugin URI: https://leakypaywall.com/
+Description: Make content free for a certain amount of time, after which it is placed behind the paywall. (timewall)
+Author: Leaky Paywall
 Version: 3.4.0
-Author URI: https://zeen101.com/
+Author URI: https://leakypaywall.com
 Tags:
 */
 
 //Define global variables...
-if (!defined('ZEEN101_STORE_URL'))
+if (!defined('ZEEN101_STORE_URL')) {
 	define('ZEEN101_STORE_URL',	'https://zeen101.com');
+}
 
 define('LP_CAA_NAME', 		'Leaky Paywall - Content Auto Archiver');
 define('LP_CAA_SLUG', 		'leaky-paywall-content-auto-archiver');
