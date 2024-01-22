@@ -47,7 +47,7 @@ class Leaky_Paywall_Content_Auto_Archiver
 
 		if (empty($restrictions['access-archived-content']) || 'off' === $restrictions['access-archived-content']) {
 
-			$settings = $this->get_settings();
+			$settings = get_leaky_paywall_content_auto_archive_settings();
 			$lp_settings = get_leaky_paywall_settings();
 
 			$keys = array_keys($settings['expirations']);
@@ -88,7 +88,7 @@ class Leaky_Paywall_Content_Auto_Archiver
 	{
 
 		global $leaky_paywall;
-		$settings = $this->get_settings();
+		$settings = get_leaky_paywall_content_auto_archive_settings();
 
 		add_filter('excerpt_more', '__return_false');
 

@@ -100,3 +100,10 @@ if (!function_exists('build_leaky_paywall_content_auto_archive_add_new_restricti
 	}
 	add_action('wp_ajax_leaky-paywall-content-auto-archive-add-new-expiration-row', 'build_leaky_paywall_content_auto_archive_add_new_restriction_row_ajax');
 }
+
+function get_leaky_paywall_content_auto_archive_settings() {
+
+	$admin = new Leaky_Paywall_Content_Auto_Archiver_Settings();
+	return $admin->get_settings();
+
+}
