@@ -23,49 +23,61 @@ class Leaky_Paywall_Content_Auto_Archiver
 	 */
 	public function __construct()
 	{
+		add_filter('leaky_paywall_current_user_can_access', array( $this, 'current_user_can_access' ), 10, 2 );
 		add_filter('leaky_paywall_filter_is_restricted', array($this, 'leaky_paywall_filter_is_restricted'), 10, 3);
 		add_filter('leaky_paywall_nag_message_text', array($this, 'the_content_paywall'), 20, 2);
+	}
+
+	public function current_user_can_access( $can_access, $post_id ) {
+
+		$post_data = get_post($post_id);
+
+		if ( !$post_data ) {
+			return $can_access;
+		}
+
+		if (!$this->is_archived_content($post_data)) {
+			return $can_access;
+		}
+
+		// is archived content
+		// check if the current user can access content
+		$site = leaky_paywall_get_current_site();
+		$lp_settings = get_leaky_paywall_settings();
+		$level_ids = leaky_paywall_subscriber_current_level_ids();
+
+		if ( empty( $level_ids ) ) {
+			$can_access = false;
+		} else {
+			foreach ($level_ids as $level_id) {
+				if (empty($lp_settings['levels'][$level_id]['site']) || $site == $lp_settings['levels'][$level_id]['site'] || 'all' == $lp_settings['levels'][$level_id]['site']) {
+					$level = $lp_settings['levels'][$level_id];
+				}
+			}
+
+			if ( isset( $level['access-archived-content'] ) && 'on' === $level['access-archived-content'] ) {
+				$can_access = true;
+			} else {
+				$can_access = false;
+			}
+		}
+
+		return $can_access;
 	}
 
 	public function leaky_paywall_filter_is_restricted($is_restricted, $restrictions, $post_id)
 	{
 
-		$lp_settings = get_leaky_paywall_settings();
-		$level_ids = leaky_paywall_subscriber_current_level_ids();
-		if (!empty($level_ids)) {
-			foreach ($level_ids as $level_id) {
-				if (empty($settings['levels'][$level_id]['site']) || $blog_id == $lp_settings['levels'][$level_id]['site'] || 'all' == $lp_settings['levels'][$level_id]['site']) {
-					$restrictions = $lp_settings['levels'][$level_id];
-				}
-			}
-		}
+		$post_data = get_post($post_id);
 
-		if (empty($restrictions['access-archived-content']) || 'off' === $restrictions['access-archived-content']) {
-
-			$settings = get_leaky_paywall_content_auto_archive_settings();
-			$lp_settings = get_leaky_paywall_settings();
-
-			$keys = array_keys($settings['expirations']);
-
-			if (is_singular($keys)) {
-
-				if (!current_user_can('manage_options')) { //Admins can see it all
-
-					// We don't ever want to block the login, subscription
-					if (!is_page(array($lp_settings['page_for_login'], $lp_settings['page_for_subscription'], $lp_settings['page_for_profile'], $lp_settings['page_for_register']))) {
-
-						$post_data = get_post($post_id);
-
-						if ( $this->is_archived_content( $post_data ) ) {
-							$is_restricted = true;
-						}
-
-					}
-				}
+		if ($post_data) {
+			if ($this->is_archived_content($post_data)) {
+				$is_restricted = true;
 			}
 		}
 
 		return $is_restricted;
+
 	}
 
 	public function is_archived_content( $post_data )
