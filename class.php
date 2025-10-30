@@ -83,6 +83,10 @@ class Leaky_Paywall_Content_Auto_Archiver
 	public function is_archived_content( $post_data )
 	{
 
+		if ( $this->matches_restriction_exceptions(( $post_data->ID ))) {
+			return false;
+		}
+
 		$settings = get_leaky_paywall_content_auto_archive_settings();
 
 		if (!empty($settings['expirations'][$post_data->post_type])) {
@@ -99,6 +103,43 @@ class Leaky_Paywall_Content_Auto_Archiver
 		}
 
 		return false;
+	}
+
+	public function matches_restriction_exceptions( $post_id ) {
+
+		$match    = false;
+		$settings = get_leaky_paywall_settings();
+
+		$category_exceptions    = $settings['post_category_exceptions'];
+		$category_exception_ids = explode(',', $category_exceptions);
+
+		if (! empty($category_exception_ids)) {
+			$post_categories = get_the_category($post_id);
+
+			foreach ($post_categories as $cat) {
+				if (in_array($cat->term_id, $category_exception_ids)) {
+					$match = true;
+				}
+			}
+		}
+
+		$tag_exceptions    = $settings['post_tag_exceptions'];
+		$tag_exception_ids = explode(',', $tag_exceptions);
+
+		if (! empty($tag_exception_ids)) {
+			$post_tag = get_the_tags($post_id);
+
+			if (is_array($post_tag)) {
+				foreach ($post_tag as $tag) {
+					if (in_array($tag->term_id, $tag_exception_ids)) {
+						$match = true;
+					}
+				}
+			}
+		}
+
+		return $match;
+
 	}
 
 	public function the_content_paywall($text, $post_id)
