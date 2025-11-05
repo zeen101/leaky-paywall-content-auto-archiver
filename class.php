@@ -87,6 +87,14 @@ class Leaky_Paywall_Content_Auto_Archiver
 			return false;
 		}
 
+		$user = wp_get_current_user();
+
+		if ( $user ) {
+			if (leaky_paywall_user_can_bypass_paywall_by_role($user)) {
+				return false;
+			}
+		}
+
 		$settings = get_leaky_paywall_content_auto_archive_settings();
 
 		if (!empty($settings['expirations'][$post_data->post_type])) {
