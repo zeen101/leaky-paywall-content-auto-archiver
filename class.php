@@ -87,6 +87,10 @@ class Leaky_Paywall_Content_Auto_Archiver
 			return false;
 		}
 
+		if ($this->visibility_allows_access( $post_data->ID )) {
+			return false;
+		}
+
 		$user = wp_get_current_user();
 
 		if ( $user ) {
@@ -112,6 +116,50 @@ class Leaky_Paywall_Content_Auto_Archiver
 
 		return false;
 	}
+
+	public function visibility_allows_access( $post_id ) {
+
+		$visibility = get_post_meta($post_id, '_issuem_leaky_paywall_visibility', true);
+		$level_ids  = leaky_paywall_subscriber_current_level_ids();
+
+		if (false !== $visibility && ! empty($visibility['visibility_type']) && 'default' !== $visibility['visibility_type']) {
+
+			switch ($visibility['visibility_type']) {
+
+				case 'only':
+					$only = array_intersect($level_ids, $visibility['only_visible']);
+					if (empty($only)) {
+						return false;
+					}
+					break;
+
+				case 'always':
+					$always = array_intersect($level_ids, $visibility['always_visible']);
+
+					if (in_array(-1, $visibility['always_visible'])) { // -1 = Everyone.
+						return true; // always visible, don't need process anymore.
+					}
+
+					// level id of the user matches those selected in the settings, and the user currently has access to that level.
+					if (! empty($always) && leaky_paywall_user_has_access()) {
+						return true;
+					}
+					break;
+
+				case 'onlyalways':
+					$onlyalways = array_intersect($level_ids, $visibility['only_always_visible']);
+					if (empty($onlyalways)) {
+						return false;
+					} elseif (! empty($onlyalways) && leaky_paywall_user_has_access()) {
+						return true; // always visible, don't need process anymore.
+					}
+					break;
+			}
+		}
+
+		return false;
+	}
+
 
 	public function matches_restriction_exceptions( $post_id ) {
 
