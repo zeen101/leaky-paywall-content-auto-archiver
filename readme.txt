@@ -3,7 +3,7 @@ Contributors: layotte, peterericson, endocreative
 Tags: metered, paywall, leaky, wordpress, magazine, news, blog, articles, archived, content
 Requires at least: 5.6
 Tested up to: 6.8.3
-Stable tag: 3.5.2
+Stable tag: 3.5.3
 
 Mark content as archived after a certain timeframe with Leaky Paywall - Content Auto Archiver
 
@@ -31,6 +31,10 @@ You must have:
 * Leaky Paywall - Content Auto Archiver is GPL
 
 == Changelog ==
+
+= 3.5.3 =
+* Add check for user role bypass
+* Do not show timewall if visibility allows access
 
 = 3.5.2 =
 * Do not archive content if it is in a restriction exception category or tag
