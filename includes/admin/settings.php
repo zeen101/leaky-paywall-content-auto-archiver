@@ -22,8 +22,13 @@ class Leaky_Paywall_Content_Auto_Archiver_Settings
      */
     public function admin_wp_enqueue_scripts($hook_suffix)
     {
-        if ('toplevel_page_issuem-leaky-paywall' === $hook_suffix)
+        if ('toplevel_page_issuem-leaky-paywall' !== $hook_suffix) {
+            return;
+        }
         wp_enqueue_script('leaky_paywall_caa_settings_js', LP_CAA_URL . 'js/issuem-leaky-paywall-settings.js', array('jquery'), LP_CAA_VERSION);
+        wp_localize_script('leaky_paywall_caa_settings_js', 'lp_caa_settings', array(
+            'nonce' => wp_create_nonce('lp_caa_add_expiration'),
+        ));
     }
 
 
@@ -172,13 +177,39 @@ class Leaky_Paywall_Content_Auto_Archiver_Settings
 
         if (!empty($_POST['expirations'])) {
 
+            // Whitelist for exp_type — anything else gets rewritten to a
+            // safe default so the runtime `strtotime()` at class.php:109
+            // can't be handed garbage.
+            $allowed_types = array( 'day', 'week', 'month', 'year' );
+            $raw_expirations = wp_unslash( $_POST['expirations'] );
+
+            // Silence PHP warnings on malformed submissions (e.g., an
+            // admin theme that submits a scalar instead of an array).
+            if ( ! is_array( $raw_expirations ) ) {
+                $raw_expirations = array();
+            }
+
             $expirations = array();
 
-            foreach ($_POST['expirations'] as $expiration) {
+            foreach ( $raw_expirations as $expiration ) {
 
-                $expirations[$expiration['post_type']] = array(
-                    'exp_value' => $expiration['exp_value'],
-                    'exp_type'  => $expiration['exp_type'],
+                if ( ! is_array( $expiration ) ) {
+                    continue;
+                }
+
+                $post_type = isset( $expiration['post_type'] ) ? sanitize_key( $expiration['post_type'] ) : '';
+                if ( '' === $post_type ) {
+                    continue;
+                }
+
+                $exp_value = isset( $expiration['exp_value'] ) ? absint( $expiration['exp_value'] ) : 0;
+                $exp_type  = isset( $expiration['exp_type'] ) && in_array( $expiration['exp_type'], $allowed_types, true )
+                    ? $expiration['exp_type']
+                    : 'month';
+
+                $expirations[ $post_type ] = array(
+                    'exp_value' => $exp_value,
+                    'exp_type'  => $exp_type,
                 );
             }
 
@@ -189,11 +220,11 @@ class Leaky_Paywall_Content_Auto_Archiver_Settings
         }
 
         if (!empty($_POST['subscribe_archive_login_message'])) {
-            $settings['subscribe_archive_login_message'] = wp_kses_post( $_POST['subscribe_archive_login_message']);
+            $settings['subscribe_archive_login_message'] = wp_kses_post( wp_unslash( $_POST['subscribe_archive_login_message'] ) );
         }
 
         if (!empty($_POST['subscribe_archive_upgrade_message'])) {
-            $settings['subscribe_archive_upgrade_message'] = wp_kses_post( $_POST['subscribe_archive_upgrade_message']);
+            $settings['subscribe_archive_upgrade_message'] = wp_kses_post( wp_unslash( $_POST['subscribe_archive_upgrade_message'] ) );
         }
 
         $this->update_settings($settings);

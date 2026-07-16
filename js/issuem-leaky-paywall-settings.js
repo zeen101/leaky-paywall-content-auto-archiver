@@ -7,6 +7,7 @@
 			var data = {
 				'action': 'leaky-paywall-content-auto-archive-add-new-expiration-row',
 				'row-key': ++content_auto_archiver_key_count,
+				'nonce': ( typeof lp_caa_settings !== 'undefined' ? lp_caa_settings.nonce : '' ),
 			}
 			$.post( ajaxurl, data, function( response ) {
 				$( 'table#leaky_paywall_content_auto_archiver_wrapper' ).append( response );
