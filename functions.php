@@ -34,45 +34,68 @@ function build_leaky_paywall_content_auto_archive_restriction_row($exp_post_type
 	// Force to int — this value is echoed into name attributes and every
 	// caller passes a numeric row key. Reflected input via the AJAX handler
 	// would XSS here without this coercion.
-	$count      = absint( $count );
-	$exp_value  = isset( $expiration['exp_value'] ) ? $expiration['exp_value'] : '';
-	$exp_type   = isset( $expiration['exp_type'] ) ? $expiration['exp_type'] : 'month';
+	$count     = absint( $count );
+	$exp_value = isset( $expiration['exp_value'] ) ? $expiration['exp_value'] : '';
+	$exp_type  = isset( $expiration['exp_type'] ) ? $expiration['exp_type'] : 'month';
 
-	$return  = '<tr>';
-	$return .= '<td>';
-	$return .= '<div class="issuem-leaky-paywall-row-expiration">';
+	$hidden_post_types = array( 'attachment', 'revision', 'nav_menu_item' );
+	$post_types        = get_post_types( array(), 'objects' );
 
-	$return .= '<select name="expirations[' . $count . '][post_type]">';
-
-	$hidden_post_types = array('attachment', 'revision', 'nav_menu_item');
-	$post_types = get_post_types(array(), 'objects');
-
-	foreach ($post_types as $post_type) {
-
-		if (in_array($post_type->name, $hidden_post_types))
-			continue;
-
-		$return .= '<option value="' . esc_attr( $post_type->name ) . '" ' . selected($post_type->name, $exp_post_type, false) . '>' . esc_html( $post_type->labels->name ) . '</option>';
+	// Resolve the current post type's display label for the card title.
+	// Falls back to "New Expiration" when the saved post_type doesn't
+	// exist on this site (e.g., a plugin that registered it was
+	// deactivated) or for a brand-new row.
+	$title = __( 'New Expiration', 'issuem-lp-caa' );
+	if ( ! empty( $exp_post_type ) && isset( $post_types[ $exp_post_type ] ) ) {
+		$title = $post_types[ $exp_post_type ]->labels->name;
 	}
-	$return .= '</select>';
 
-	$return .= ' <span>' . esc_html__('place behind the paywall after', 'issuem-lp-caa') . '</span> ';
+	$time_units = array(
+		'day'   => __( 'Day(s)', 'issuem-lp-caa' ),
+		'week'  => __( 'Week(s)', 'issuem-lp-caa' ),
+		'month' => __( 'Month(s)', 'issuem-lp-caa' ),
+		'year'  => __( 'Year(s)', 'issuem-lp-caa' ),
+	);
 
-	$return .= '<input type="text" class="exp_value small-text" name="expirations[' . $count . '][exp_value]" value="' . esc_attr( $exp_value ) . '" placeholder="' . esc_attr__('#', 'issuem-lp-caa') . '" />';
-
-	$return .= '<select id="exp_type" name="expirations[' . $count . '][exp_type]">';
-	$return .= '  <option value="day" ' . selected('day' === $exp_type, true, false) . '>' . esc_html__('Day(s)', 'issuem-lp-caa') . '</option>';
-	$return .= '  <option value="week" ' . selected('week' === $exp_type, true, false) . '>' . esc_html__('Week(s)', 'issuem-lp-caa') . '</option>';
-	$return .= '  <option value="month" ' . selected('month' === $exp_type, true, false) . '>' . esc_html__('Month(s)', 'issuem-lp-caa') . '</option>';
-	$return .= '  <option value="year" ' . selected('year' === $exp_type, true, false) . '>' . esc_html__('Year(s)', 'issuem-lp-caa') . '</option>';
-	$return .= '</select>';
-
-	$return .= '<span class="delete-x delete-expiration-row">&times;</span>';
-
+	$return  = '<div id="lp-caa-row-' . $count . '" class="lp-caa-row">';
+	$return .= '<div class="lp-caa-row__header">';
+	$return .= '<span class="lp-caa-row__title">' . esc_html( $title ) . '</span>';
+	$return .= '<button type="button" class="delete-expiration-row" data-id="' . $count . '">' . esc_html__( 'Remove', 'issuem-lp-caa' ) . '</button>';
 	$return .= '</div>';
 
-	$return .= '</td>';
-	$return .= '</tr>';
+	$return .= '<div class="lp-caa-row__fields">';
+
+	// Post type field.
+	$return .= '<div class="lp-caa-field">';
+	$return .= '<label>' . esc_html__( 'Post Type', 'issuem-lp-caa' ) . '</label>';
+	$return .= '<select name="expirations[' . $count . '][post_type]">';
+	foreach ( $post_types as $post_type ) {
+		if ( in_array( $post_type->name, $hidden_post_types, true ) ) {
+			continue;
+		}
+		$return .= '<option value="' . esc_attr( $post_type->name ) . '" ' . selected( $post_type->name, $exp_post_type, false ) . '>' . esc_html( $post_type->labels->name ) . '</option>';
+	}
+	$return .= '</select>';
+	$return .= '</div>';
+
+	// Number input.
+	$return .= '<div class="lp-caa-field">';
+	$return .= '<label>' . esc_html__( 'Place Behind Paywall After', 'issuem-lp-caa' ) . '</label>';
+	$return .= '<input type="number" min="1" step="1" class="exp_value" name="expirations[' . $count . '][exp_value]" value="' . esc_attr( $exp_value ) . '" placeholder="1" />';
+	$return .= '</div>';
+
+	// Time unit dropdown.
+	$return .= '<div class="lp-caa-field">';
+	$return .= '<label>' . esc_html__( 'Time Unit', 'issuem-lp-caa' ) . '</label>';
+	$return .= '<select name="expirations[' . $count . '][exp_type]">';
+	foreach ( $time_units as $unit_value => $unit_label ) {
+		$return .= '<option value="' . esc_attr( $unit_value ) . '" ' . selected( $unit_value === $exp_type, true, false ) . '>' . esc_html( $unit_label ) . '</option>';
+	}
+	$return .= '</select>';
+	$return .= '</div>';
+
+	$return .= '</div>'; // .lp-caa-row__fields
+	$return .= '</div>'; // .lp-caa-row
 
 	return $return;
 }

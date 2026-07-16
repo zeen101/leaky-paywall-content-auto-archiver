@@ -22,9 +22,18 @@ class Leaky_Paywall_Content_Auto_Archiver_Settings
      */
     public function admin_wp_enqueue_scripts($hook_suffix)
     {
-        if ('toplevel_page_issuem-leaky-paywall' !== $hook_suffix) {
+        // Only load on the LP Settings page. Historically LP core's top-level
+        // menu slug WAS the settings page (hook suffix
+        // `toplevel_page_issuem-leaky-paywall`), but as of LP 5.x settings
+        // moved to a submenu with slug `leaky-paywall-settings` — the old
+        // suffix now matches the Dashboard, not Settings. Matching on the
+        // `page` query var stays stable across LP core's menu restructures
+        // and covers both the pre-5.x and 5.x layouts.
+        $page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+        if ( ! in_array( $page, array( 'issuem-leaky-paywall', 'leaky-paywall-settings' ), true ) ) {
             return;
         }
+
         wp_enqueue_script('leaky_paywall_caa_settings_js', LP_CAA_URL . 'js/issuem-leaky-paywall-settings.js', array('jquery'), LP_CAA_VERSION);
         wp_localize_script('leaky_paywall_caa_settings_js', 'lp_caa_settings', array(
             'nonce' => wp_create_nonce('lp_caa_add_expiration'),
@@ -92,7 +101,7 @@ class Leaky_Paywall_Content_Auto_Archiver_Settings
 
                 <p><strong><?php _e('Timewall Settings', 'issuem-lp-caa'); ?></strong></p>
 
-                <table id="leaky_paywall_content_auto_archiver_wrapper" class="leaky-paywall-table">
+                <div id="leaky_paywall_content_auto_archiver_wrapper" class="lp-caa-wrapper">
 
                     <?php
                     $count = 0;
@@ -104,14 +113,69 @@ class Leaky_Paywall_Content_Auto_Archiver_Settings
                     }
                     ?>
 
-                </table>
+                </div>
+
+                <style>
+                    .lp-caa-row {
+                        background: #fff;
+                        border: 1px solid #dcdcde;
+                        border-radius: 6px;
+                        margin-bottom: 12px;
+                        overflow: hidden;
+                    }
+                    .lp-caa-row__header {
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding: 10px 14px;
+                        background: #f9f9f9;
+                        border-bottom: 1px solid #dcdcde;
+                    }
+                    .lp-caa-row__title {
+                        font-weight: 600;
+                        font-size: 13px;
+                        color: #1d2327;
+                    }
+                    .delete-expiration-row {
+                        background: none;
+                        border: none;
+                        color: #b32d2e;
+                        cursor: pointer;
+                        font-size: 12px;
+                        padding: 2px 6px;
+                    }
+                    .delete-expiration-row:hover {
+                        color: #a00;
+                        text-decoration: underline;
+                    }
+                    .lp-caa-row__fields {
+                        display: grid;
+                        grid-template-columns: 2fr 1fr 1fr;
+                        gap: 12px;
+                        padding: 14px;
+                    }
+                    .lp-caa-field label {
+                        display: block;
+                        font-size: 11px;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.4px;
+                        color: #646970;
+                        margin-bottom: 4px;
+                    }
+                    .lp-caa-field input[type="number"],
+                    .lp-caa-field select {
+                        width: 100%;
+                        max-width: 100%;
+                    }
+                </style>
 
                 <script type="text/javascript" charset="utf-8">
                     var content_auto_archiver_key_count = <?php echo $count; ?>;
                 </script>
 
                 <p>
-                    <input class="button-secondary" id="add-expiration-row" class="add-new-issuem-leaky-paywall-expiration-row" type="submit" name="add_leaky_paywall_expiration_row" value="<?php _e('Add New Expiration', 'issuem-lp-caa'); ?>" />
+                    <input class="button-secondary add-new-issuem-leaky-paywall-expiration-row" id="add-expiration-row" type="button" value="<?php esc_attr_e('Add New Expiration', 'issuem-lp-caa'); ?>" />
                 </p>
 
         </div>
