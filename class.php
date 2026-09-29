@@ -26,6 +26,32 @@ class Leaky_Paywall_Content_Auto_Archiver
 		add_filter('leaky_paywall_current_user_can_access', array( $this, 'current_user_can_access' ), 10, 2 );
 		add_filter('leaky_paywall_filter_is_restricted', array($this, 'leaky_paywall_filter_is_restricted'), 10, 3);
 		add_filter('leaky_paywall_nag_message_text', array($this, 'the_content_paywall'), 20, 2);
+
+		// After Subscribe Messages (10) and the Offer Engine (15): archive access is the real gate.
+		add_filter('leaky_paywall_nag_type', array($this, 'nag_type'), 20, 2);
+	}
+
+	/**
+	 * Give archived content its own nag type.
+	 *
+	 * List Builder takes over "subscribe" and "upgrade" nags with its modal,
+	 * and LP core then skips the in-content nag, so the archive message never
+	 * showed. List Builder ignores other types, so "archived" lets core
+	 * render the archive message in the content.
+	 *
+	 * @param string $nag_type Current nag type.
+	 * @param int    $post_id  Post being viewed.
+	 * @return string
+	 */
+	public function nag_type($nag_type, $post_id)
+	{
+		$post_data = get_post($post_id);
+
+		if ($post_data && $this->is_archived_content($post_data)) {
+			return 'archived';
+		}
+
+		return $nag_type;
 	}
 
 	public function current_user_can_access( $can_access, $post_id ) {
